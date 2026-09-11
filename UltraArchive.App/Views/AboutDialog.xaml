@@ -1,0 +1,71 @@
+<ui:FluentWindow
+        x:Class="UltraArchive.App.Views.AboutDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:res="clr-namespace:UltraArchive.App.Resources"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="{x:Static res:Strings.AboutWindowTitle}"
+        Icon="pack://application:,,,/UltraArchive;component/Assets/UltraArchive.ico"
+        Height="470" Width="380" ResizeMode="NoResize"
+        WindowStartupLocation="CenterOwner"
+        ShowInTaskbar="False"
+        ExtendsContentIntoTitleBar="True"
+        WindowBackdropType="None"
+        Background="{StaticResource UA.Brush.WindowBackground}"
+        WindowCornerPreference="Round">
+
+    <Grid Margin="0,36,0,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="{x:Static res:Strings.AboutWindowTitle}"
+                     ShowMaximize="False" ShowMinimize="False" Background="Transparent"
+                     VerticalAlignment="Top" Margin="0,-36,0,0" />
+
+        <Border Grid.Row="1" Style="{StaticResource UA.Card}" Margin="16,4,16,16" Padding="22,20">
+            <StackPanel HorizontalAlignment="Center">
+                <Image Source="pack://application:,,,/UltraArchive;component/Assets/UltraArchive-logo.png"
+                       Width="72" Height="72" Stretch="Uniform" RenderOptions.BitmapScalingMode="HighQuality">
+                    <Image.Effect>
+                        <DropShadowEffect BlurRadius="18" ShadowDepth="0" Opacity="0.45" Color="#0A1830" />
+                    </Image.Effect>
+                </Image>
+
+                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,12,0,0">
+                    <TextBlock Text="Ultra" Style="{StaticResource UA.BrandMark}" FontSize="22" />
+                    <TextBlock Text="Archive" Style="{StaticResource UA.BrandMark}" FontSize="22"
+                               Foreground="{StaticResource UA.Brush.Cyan}" FontWeight="Light" />
+                </StackPanel>
+
+                <TextBlock x:Name="VersionText" Margin="0,4,0,0" HorizontalAlignment="Center"
+                           Foreground="{StaticResource UA.Brush.TextMuted}" FontSize="12.5" />
+
+                <TextBlock Text="{x:Static res:Strings.AboutDescription}" Margin="0,16,0,0"
+                           TextWrapping="Wrap" TextAlignment="Center" FontSize="12.5"
+                           Foreground="{StaticResource UA.Brush.TextSecondary}" />
+
+                <Rectangle Height="1" Margin="0,18,0,16" Fill="{StaticResource UA.Brush.StrokeSoft}" />
+
+                <Border Width="30" Height="30" CornerRadius="7" ClipToBounds="True"
+                        BorderBrush="{StaticResource UA.Brush.StrokeSoft}" BorderThickness="1">
+                    <Image Source="pack://application:,,,/UltraArchive;component/Assets/ASTRIM-logo.png"
+                           Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" />
+                </Border>
+                <TextBlock Text="{x:Static res:Strings.AboutDevelopedBy}" Margin="0,8,0,0"
+                           HorizontalAlignment="Center" FontWeight="SemiBold" FontSize="12.5"
+                           Foreground="{StaticResource UA.Brush.TextPrimary}" />
+                <TextBlock Text="{x:Static res:Strings.AboutCopyright}" Margin="0,2,0,0"
+                           HorizontalAlignment="Center" FontSize="11"
+                           Foreground="{StaticResource UA.Brush.TextMuted}" />
+
+                <ui:Button Content="{x:Static res:Strings.ButtonClose}" Margin="0,20,0,0" Padding="24,7"
+                           Click="Close_Click" />
+            </StackPanel>
+        </Border>
+    </Grid>
+</ui:FluentWindow>

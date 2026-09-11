@@ -83,6 +83,15 @@
   <data name="ShellProgressButtonBackground" xml:space="preserve"><value>Segundo plano</value></data>
   <data name="ShellProgressPreparing" xml:space="preserve"><value>Preparando…</value></data>
 
+  <data name="ButtonAbout" xml:space="preserve"><value>Acerca de</value></data>
+  <data name="ButtonAboutTooltip" xml:space="preserve"><value>Acerca de UltraArchive</value></data>
+  <data name="ButtonClose" xml:space="preserve"><value>Cerrar</value></data>
+  <data name="AboutWindowTitle" xml:space="preserve"><value>Acerca de UltraArchive</value></data>
+  <data name="AboutDescription" xml:space="preserve"><value>Alternativa moderna a WinRAR / 7-Zip para Windows: ZIP, 7Z, TAR, GZIP, RAR e ISO, con cifrado AES-256 y menú contextual integrado.</value></data>
+  <data name="AboutDevelopedBy" xml:space="preserve"><value>Desarrollado por ASTRIM</value></data>
+  <data name="AboutVersion" xml:space="preserve"><value>Versión {0}</value></data>
+  <data name="AboutCopyright" xml:space="preserve"><value>© 2026 ASTRIM. Todos los derechos reservados.</value></data>
+
   <data name="CompressWindowTitle" xml:space="preserve"><value>Comprimir</value></data>
   <data name="CompressLabelSources" xml:space="preserve"><value>Archivos y carpetas a comprimir</value></data>
   <data name="CompressButtonAddFiles" xml:space="preserve"><value>Añadir archivos...</value></data>

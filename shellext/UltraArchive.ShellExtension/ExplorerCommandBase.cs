@@ -166,17 +166,8 @@ internal abstract partial class ExplorerCommandBase : IExplorerCommand
     }
 
     /// <summary>Nombre base para los títulos dinámicos: quita la extensión (y la doble <c>.tar.gz</c>).</summary>
-    internal static string GetSelectionStem(IShellItemArray? psia)
-    {
-        string? path = GetFirstFilePath(psia);
-        if (string.IsNullOrEmpty(path))
-            return "archivo";
-
-        string name = Path.GetFileNameWithoutExtension(path);
-        if (Path.GetExtension(name).Equals(".tar", StringComparison.OrdinalIgnoreCase))
-            name = Path.GetFileNameWithoutExtension(name);
-        return name.Length == 0 ? "archivo" : name;
-    }
+    internal static string GetSelectionStem(IShellItemArray? psia) =>
+        SelectionLogic.StemFromPath(GetFirstFilePath(psia));
 
     /// <summary>
     /// Lanza <c>UltraArchive.exe</c> con <paramref name="flag"/> (o sin flag si es null) seguido de
@@ -197,10 +188,8 @@ internal abstract partial class ExplorerCommandBase : IExplorerCommand
         try
         {
             var psi = MakeStartInfo(exe);
-            if (!string.IsNullOrEmpty(flag))
-                psi.ArgumentList.Add(flag);
-            foreach (string p in paths)
-                psi.ArgumentList.Add(p);
+            foreach (string arg in SelectionLogic.BuildArguments(flag, paths))
+                psi.ArgumentList.Add(arg);
 
             Process.Start(psi);
             return 0; // S_OK
@@ -232,9 +221,8 @@ internal abstract partial class ExplorerCommandBase : IExplorerCommand
             foreach (string p in paths)
             {
                 var psi = MakeStartInfo(exe);
-                if (!string.IsNullOrEmpty(flag))
-                    psi.ArgumentList.Add(flag);
-                psi.ArgumentList.Add(p);
+                foreach (string arg in SelectionLogic.BuildArguments(flag, new[] { p }))
+                    psi.ArgumentList.Add(arg);
                 Process.Start(psi);
             }
             return 0;

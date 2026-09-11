@@ -13,7 +13,7 @@ internal partial class CmdOpen : ExplorerCommandBase
 {
     protected override string? GetStaticTitle() => "Abrir con Ultra Archive";
     protected override EXPCMDSTATE GetCommandState(IShellItemArray? psia) =>
-        ArchiveDetection.SelectionHasArchive(psia) ? EXPCMDSTATE.ECS_ENABLED : EXPCMDSTATE.ECS_HIDDEN;
+        ArchiveSelection.HasArchive(psia) ? EXPCMDSTATE.ECS_ENABLED : EXPCMDSTATE.ECS_HIDDEN;
     protected override int OnInvoke(IShellItemArray? psia) => LaunchUltraArchivePerItem(null, psia);
 }
 
@@ -22,7 +22,7 @@ internal partial class CmdExtractFiles : ExplorerCommandBase
 {
     protected override string? GetStaticTitle() => "Extraer ficheros…";
     protected override EXPCMDSTATE GetCommandState(IShellItemArray? psia) =>
-        ArchiveDetection.SelectionHasArchive(psia) ? EXPCMDSTATE.ECS_ENABLED : EXPCMDSTATE.ECS_HIDDEN;
+        ArchiveSelection.HasArchive(psia) ? EXPCMDSTATE.ECS_ENABLED : EXPCMDSTATE.ECS_HIDDEN;
     protected override int OnInvoke(IShellItemArray? psia) => LaunchUltraArchivePerItem("--extract-to", psia);
 }
 
@@ -31,7 +31,7 @@ internal partial class CmdExtractHereFlat : ExplorerCommandBase
 {
     protected override string? GetStaticTitle() => "Extraer aquí";
     protected override EXPCMDSTATE GetCommandState(IShellItemArray? psia) =>
-        ArchiveDetection.SelectionHasArchive(psia) ? EXPCMDSTATE.ECS_ENABLED : EXPCMDSTATE.ECS_HIDDEN;
+        ArchiveSelection.HasArchive(psia) ? EXPCMDSTATE.ECS_ENABLED : EXPCMDSTATE.ECS_HIDDEN;
     protected override int OnInvoke(IShellItemArray? psia) => LaunchUltraArchivePerItem("--extract-here-flat", psia);
 }
 
@@ -42,6 +42,6 @@ internal partial class CmdExtractToSubfolder : ExplorerCommandBase
     protected override string? GetDynamicTitle(IShellItemArray? psia) =>
         $"Extraer en \"{GetSelectionStem(psia)}\\\"";
     protected override EXPCMDSTATE GetCommandState(IShellItemArray? psia) =>
-        ArchiveDetection.SelectionHasArchive(psia) ? EXPCMDSTATE.ECS_ENABLED : EXPCMDSTATE.ECS_HIDDEN;
+        ArchiveSelection.HasArchive(psia) ? EXPCMDSTATE.ECS_ENABLED : EXPCMDSTATE.ECS_HIDDEN;
     protected override int OnInvoke(IShellItemArray? psia) => LaunchUltraArchivePerItem("--extract-here", psia);
 }

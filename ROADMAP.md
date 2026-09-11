@@ -446,6 +446,11 @@ SHA-256 `56B8CC9F4971CEF253644FAFE54063ED7FDCA551D4DEE0F8C6BAA81B855ACD72`), col
     intermedias; `WixUILicenseRtf` = `installer/Assets/License.rtf`. Imágenes en `installer/Assets/`,
     generadas de `Pictures/ASTRIM/{Diego Logo Astrim,logo}.png`. Para verlo hay que instalar
     **sin `/qb`** (`build/shellext/reinstall.ps1` ya lanza el MSI interactivo).
+    **En español**: `Package Language="3082"` (`Package.wxs`) + `<Cultures>es-ES</Cultures>`
+    (`.wixproj`) — WixUI trae localización `es-ES` de fábrica pero hacen falta AMBAS propiedades o
+    cae a inglés; verificado leyendo la tabla `Control` del MSI compilado, no solo mirando el
+    asistente. `Manufacturer="ASTRIM"` (antes "UltraArchive"); sin `ARPHELPLINK` (se añadirá una URL
+    real cuando exista).
   - **Registra el submenú contextual "Ultra Archive" en `HKLM\Software\Classes`** de forma
     declarativa (componente `ContextMenuIntegration`): misma estructura que
     `RegistryShellIntegrationService` pero puesta por el instalador; Windows Installer la elimina
@@ -625,6 +630,40 @@ de **compresión** siguen abriendo `CompressWindow` (que ya tenía su propia bar
 MainViewModel.cs` (`ProgressElapsedText`, evento `ShellOperationFinished`, `RunStartupCommandAsync`
 con `try/finally`), `App/Services/Wpf{PasswordProvider,CollisionPrompt}.cs`, `Strings*.resx`.
 **419/419 tests en verde.**
+
+### Marca ASTRIM: barra de estado y diálogo "Acerca de"
+
+- **Barra de estado** de `MainWindow` (esquina inferior derecha): logo `App/Assets/ASTRIM-logo.png`
+  (96×96 en disco, mostrado a 18px en un tile redondeado con borde) + texto "ASTRIM" en
+  `UA.Brush.TextMuted`, tras un separador vertical. Pinned a la derecha (`DockPanel.Dock="Right"`,
+  primer hijo → queda pegado al borde aunque aparezcan la barra de progreso o "Cancelar").
+- **Diálogo "Acerca de"** (`App/Views/AboutDialog.xaml`, botón ℹ️ nuevo en la barra de herramientas,
+  junto al de tema): logo de UltraArchive, marca "UltraArchive", versión (leída en runtime de
+  `Assembly.GetExecutingAssembly().GetName().Version` — nunca hardcodeada), descripción corta, logo
+  de ASTRIM + "Desarrollado por ASTRIM" + copyright, botón Cerrar. Sin ViewModel propio (contenido
+  estático); `MainViewModel.AboutCommand` (`RelayCommand`) lo abre con
+  `Owner = Application.Current?.MainWindow`.
+- Cadenas nuevas (`Strings.resx`/`.en.resx`/`Designer.cs`): `ButtonAbout(Tooltip)`, `ButtonClose`,
+  `AboutWindowTitle`, `AboutDescription`, `AboutDevelopedBy`, `AboutVersion`, `AboutCopyright`.
+
+### Tests de `shellext/` (lógica pura, fuera de `UltraArchive.sln`)
+
+La DLL de la extensión de shell es **Native AOT** y no puede alojar xUnit, así que
+`shellext/UltraArchive.ShellExtension.Tests` (net8.0 normal, fuera del `.sln` como el resto de
+`shellext/`) enlaza (`<Compile Include>`, **no** `ProjectReference`) los ficheros que son lógica
+pura, para testear exactamente el mismo código que corre en la DLL sin duplicarlo:
+
+- **`ArchiveDetection.cs`** — se separó de la comprobación con COM: ahora solo contiene
+  `IsArchive(string path)` (la lista de 8 extensiones), sin ningún tipo `IShellItem*`. La parte que
+  sí recorre un `IShellItemArray` pasó a un fichero nuevo, `ArchiveSelection.cs` (queda solo en el
+  proyecto principal, no se enlaza en los tests).
+- **`SelectionLogic.cs`** (nuevo) — `StemFromPath` (nombre base para los títulos dinámicos,
+  extraído de `ExplorerCommandBase.GetSelectionStem`) y `BuildArguments` (arma la lista de
+  argumentos para `UltraArchive.exe`, extraído de `LaunchUltraArchive`/`LaunchUltraArchivePerItem`).
+  Mismo comportamiento de antes, ahora aislado y testeado.
+
+**31/31 tests en verde** (`dotnet test shellext/UltraArchive.ShellExtension.Tests`). Total del
+proyecto: **419** (`UltraArchive.sln`) **+ 31** (`shellext/`).
 
 ---
 

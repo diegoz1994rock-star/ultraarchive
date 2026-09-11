@@ -79,6 +79,15 @@ internal static class Strings
     public static string ShellProgressButtonBackground => Get(nameof(ShellProgressButtonBackground));
     public static string ShellProgressPreparing => Get(nameof(ShellProgressPreparing));
 
+    public static string ButtonAbout => Get(nameof(ButtonAbout));
+    public static string ButtonAboutTooltip => Get(nameof(ButtonAboutTooltip));
+    public static string ButtonClose => Get(nameof(ButtonClose));
+    public static string AboutWindowTitle => Get(nameof(AboutWindowTitle));
+    public static string AboutDescription => Get(nameof(AboutDescription));
+    public static string AboutDevelopedBy => Get(nameof(AboutDevelopedBy));
+    public static string AboutVersion => Get(nameof(AboutVersion));
+    public static string AboutCopyright => Get(nameof(AboutCopyright));
+
     public static string CompressWindowTitle => Get(nameof(CompressWindowTitle));
     public static string CompressLabelSources => Get(nameof(CompressLabelSources));
     public static string CompressButtonAddFiles => Get(nameof(CompressButtonAddFiles));

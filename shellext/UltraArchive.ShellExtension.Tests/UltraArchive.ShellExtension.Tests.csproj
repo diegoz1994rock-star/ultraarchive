@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Tests xUnit de la lógica PURA de la extensión de shell (shellext/UltraArchive.ShellExtension).
+
+    NO referencia ese proyecto (es Native AOT + RuntimeIdentifier win-x64 + NativeLib=Shared:
+    no puede cargar xUnit ni ejecutarse como test normal). En vez de eso enlaza directamente los
+    ficheros fuente que son lógica pura (sin COM, sin proceso, sin registro) vía <Compile Include>,
+    así los tests corren contra el MISMO código que usa la DLL COM, sin duplicarlo.
+
+    Fuera de UltraArchive.sln (como el resto de shellext/ e installer/): no necesita el linker de
+    MSVC ni win-x64, así que se puede ejecutar en cualquier máquina con el SDK de .NET 8.
+
+    Uso: dotnet test shellext/UltraArchive.ShellExtension.Tests
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="coverlet.collector" Version="6.0.0" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="xunit" Version="2.5.3" />
+    <PackageReference Include="xunit.runner.visualstudio" Version="2.5.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Using Include="Xunit" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Include="..\UltraArchive.ShellExtension\SelectionLogic.cs" Link="Source\SelectionLogic.cs" />
+    <Compile Include="..\UltraArchive.ShellExtension\ArchiveDetection.cs" Link="Source\ArchiveDetection.cs" />
+  </ItemGroup>
+
+</Project>

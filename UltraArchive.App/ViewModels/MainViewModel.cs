@@ -88,6 +88,7 @@ public sealed class MainViewModel : ViewModelBase
         ToggleThemeCommand = new RelayCommand(ToggleTheme);
         CancelOperationCommand = new RelayCommand(() => _cts?.Cancel(), () => IsBusy);
         ShellIntegrationCommand = new RelayCommand(ToggleShellIntegration, () => !IsBusy);
+        AboutCommand = new RelayCommand(ShowAbout);
     }
 
     /// <summary>Filas visibles en la tabla: subcarpetas + ficheros de la carpeta seleccionada en el árbol.</summary>
@@ -123,6 +124,7 @@ public sealed class MainViewModel : ViewModelBase
     public RelayCommand ToggleThemeCommand { get; }
     public RelayCommand CancelOperationCommand { get; }
     public RelayCommand ShellIntegrationCommand { get; }
+    public RelayCommand AboutCommand { get; }
 
     public string WindowTitle
     {
@@ -790,6 +792,12 @@ public sealed class MainViewModel : ViewModelBase
     private static string FormatElapsed(TimeSpan elapsed) =>
         elapsed.TotalHours >= 1 ? elapsed.ToString(@"h\:mm\:ss") : elapsed.ToString(@"mm\:ss");
 
+
+    private static void ShowAbout()
+    {
+        var dialog = new AboutDialog { Owner = Application.Current?.MainWindow };
+        dialog.ShowDialog();
+    }
 
     private void ToggleTheme()
     {

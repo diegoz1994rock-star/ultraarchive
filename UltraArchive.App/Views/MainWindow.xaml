@@ -79,6 +79,9 @@
                     <ui:Button Style="{StaticResource UA.ToolChrome}" Command="{Binding ToggleThemeCommand}" ToolTip="Cambiar tema claro/oscuro">
                         <ui:Button.Icon><ui:SymbolIcon Symbol="WeatherMoon24" /></ui:Button.Icon>
                     </ui:Button>
+                    <ui:Button Style="{StaticResource UA.ToolChrome}" Command="{Binding AboutCommand}" ToolTip="{x:Static res:Strings.ButtonAboutTooltip}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="Info24" /></ui:Button.Icon>
+                    </ui:Button>
                 </StackPanel>
 
                 <WrapPanel Orientation="Horizontal">

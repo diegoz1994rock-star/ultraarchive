@@ -18,7 +18,7 @@
      xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
 
   <Package Name="UltraArchive"
-           Manufacturer="UltraArchive"
+           Manufacturer="ASTRIM"
            Version="$(var.ProductVersion)"
            UpgradeCode="9F4A1E7C-4C2B-4C0E-9E3A-9B1D2F6A7C51"
            Scope="perMachine"
@@ -31,7 +31,7 @@
 
     <Icon Id="UltraArchive.ico" SourceFile="$(var.PublishDir)\UltraArchive.exe" />
     <Property Id="ARPPRODUCTICON" Value="UltraArchive.ico" />
-    <Property Id="ARPHELPLINK" Value="https://github.com/" />
+    <!-- Sin ARPHELPLINK todavia: se anadira cuando ASTRIM tenga una URL oficial. -->
     <!-- ARPNOMODIFY / ARPNOREPAIR los fija WixUI_InstallDir. -->
     <Property Id="ARPNOREPAIR" Value="1" />
 

@@ -714,7 +714,21 @@ public sealed class MainViewModel : ViewModelBase
             viewModel.InitializeFromShell(initialSources, format, preferSplit, autoStart);
         }
 
-        var window = new CompressWindow(viewModel) { Owner = Application.Current?.MainWindow };
+        // DialogOwner.Pick() (no Application.Current.MainWindow a secas): cuando "Comprimir" se
+        // lanza desde el menú contextual, la ventana principal existe pero no se muestra — asignarle
+        // Owner a una ventana no visible lanza InvalidOperationException. Sin ninguna ventana visible
+        // (owner null), se centra en la pantalla en vez de "sobre el propietario".
+        var owner = DialogOwner.Pick();
+        var window = new CompressWindow(viewModel);
+        if (owner is not null)
+        {
+            window.Owner = owner;
+        }
+        else
+        {
+            window.WindowStartupLocation = WindowStartupLocation.CenterScreen;
+        }
+
         window.ShowDialog();
 
         if (viewModel.Succeeded)

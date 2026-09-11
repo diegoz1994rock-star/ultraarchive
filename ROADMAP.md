@@ -665,6 +665,20 @@ pura, para testear exactamente el mismo código que corre en la DLL sin duplicar
 **31/31 tests en verde** (`dotnet test shellext/UltraArchive.ShellExtension.Tests`). Total del
 proyecto: **419** (`UltraArchive.sln`) **+ 31** (`shellext/`).
 
+### Comprimir desde el menú también oculta la ventana principal
+
+Igualado con el comportamiento de "Extraer" (ver más arriba): los verbos `--compress[-here|-zip|-7z
+|-split]` ya no muestran la ventana principal detrás de la ventana "Comprimir". `App.xaml.cs` trata
+`isShellCompress` igual que `isShellExtraction` (sin `mainWindow.Show()`) y se suscribe a
+`MainViewModel.ShellOperationFinished` para cerrar la aplicación cuando `OpenCompressWindow`
+(que sigue abriendo `CompressWindow` normal, con su propia barra de progreso) devuelve el control —
+a menos que una instancia reenviada haya hecho visible la ventana principal mientras tanto.
+`MainViewModel.OpenCompressWindow` usa `DialogOwner.Pick()` en vez de `Application.Current.MainWindow`
+a secas (que lanzaría `InvalidOperationException` si la principal no está visible); sin ninguna
+ventana visible, `CompressWindow` se centra en la pantalla en vez de "sobre el propietario".
+Verificado: `--compress-zip`/`--compress` desde un solo proceso, sin segunda ventana "UltraArchive",
+cierre limpio del proceso al terminar o al cerrar "Comprimir" a mano. 419/419 tests en verde.
+
 ---
 
 ## 5. Pruebas

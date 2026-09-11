@@ -69,15 +69,18 @@ public partial class App : Application
 
         var mainWindow = _serviceProvider.GetRequiredService<MainWindow>();
 
-        // Verbos de EXTRACCIÓN del menú contextual: UltraArchive se abrió solo para esa operación.
-        // En vez de la ventana principal, se muestra una ventana compacta de progreso (estilo WinRAR)
-        // y, al terminar, la aplicación se cierra. Si una segunda instancia reenvía otro comando
-        // mientras tanto, el manejador del pipe muestra la ventana principal y el proceso sigue vivo.
+        // Verbos de EXTRACCIÓN y COMPRESIÓN del menú contextual: UltraArchive se abrió solo para esa
+        // operación, así que no hace falta mostrar la ventana principal detrás. Al terminar, la
+        // aplicación se cierra sola. Si una segunda instancia reenvía otro comando mientras tanto, el
+        // manejador del pipe muestra la ventana principal y el proceso sigue vivo (se cancela el cierre).
         var isShellExtraction = command.Action is ShellAction.ExtractHere
             or ShellAction.ExtractHereFlat or ShellAction.ExtractTo;
+        var isShellCompress = command.Action is ShellAction.Compress or ShellAction.CompressHere
+            or ShellAction.CompressToZip or ShellAction.CompressTo7z or ShellAction.CompressSplit;
 
         if (isShellExtraction)
         {
+            // Ventana compacta de progreso (estilo WinRAR): fichero + %, tiempo, Cancelar.
             var progressWindow = new ShellProgressWindow(mainViewModel);
             progressWindow.Closed += (_, _) =>
             {
@@ -88,6 +91,20 @@ public partial class App : Application
             };
             progressWindow.Show();
             RunShellCommand(progressWindow, mainViewModel, command);
+        }
+        else if (isShellCompress)
+        {
+            // OpenCompressWindow (llamado dentro de RunStartupCommandAsync) ya muestra su propia
+            // ventana "Comprimir" con barra de progreso; aquí solo evitamos abrir la principal detrás
+            // y cerramos la aplicación cuando termine (a menos que una instancia reenviada la muestre).
+            mainViewModel.ShellOperationFinished += (_, _) =>
+            {
+                if (!mainWindow.IsVisible)
+                {
+                    Shutdown();
+                }
+            };
+            RunShellCommand(mainWindow, mainViewModel, command);
         }
         else
         {

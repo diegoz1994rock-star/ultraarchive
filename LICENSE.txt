@@ -1,0 +1,22 @@
+UltraArchive
+Copyright © 2026 UltraArchive. Todos los derechos reservados.
+
+Este software y su código fuente son propiedad de sus autores. No se concede
+ninguna licencia de uso, copia, modificación o distribución salvo que se acuerde
+por escrito con el titular de los derechos.
+
+--------------------------------------------------------------------------------
+
+Software de terceros
+--------------------
+UltraArchive utiliza y/o redistribuye componentes de terceros bajo sus propias
+licencias. El detalle completo (nombre, versión, licencia y obligaciones) está en:
+
+    THIRD-PARTY-NOTICES.txt
+
+En resumen, todas las dependencias son de licencia permisiva (MIT) o de dominio
+público, compatibles con la distribución de UltraArchive.
+
+Nota: la licencia final que se aplique a UltraArchive (propietaria, MIT, u otra)
+es una decisión del titular del proyecto; este archivo recoge el estado por
+defecto (todos los derechos reservados) hasta que se decida otra cosa.

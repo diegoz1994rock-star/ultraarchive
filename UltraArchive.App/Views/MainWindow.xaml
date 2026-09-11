@@ -1,0 +1,207 @@
+<ui:FluentWindow
+        x:Class="UltraArchive.App.Views.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="http://schemas.lepo.co/wpfui/2022/xaml"
+        xmlns:conv="clr-namespace:UltraArchive.App.Converters"
+        xmlns:vm="clr-namespace:UltraArchive.App.ViewModels"
+        xmlns:res="clr-namespace:UltraArchive.App.Resources"
+        xmlns:s="clr-namespace:System.Windows.Controls;assembly=PresentationFramework"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d"
+        Title="{Binding WindowTitle}"
+        Icon="pack://application:,,,/UltraArchive;component/Assets/UltraArchive.ico"
+        Height="720" Width="1180" MinHeight="480" MinWidth="760"
+        WindowStartupLocation="CenterScreen"
+        ExtendsContentIntoTitleBar="True"
+        WindowBackdropType="None"
+        Background="{StaticResource UA.Brush.WindowBackground}"
+        WindowCornerPreference="Round">
+
+    <ui:FluentWindow.Resources>
+        <conv:ByteSizeConverter x:Key="ByteSizeConverter" />
+        <conv:EntryTypeConverter x:Key="EntryTypeConverter" />
+        <conv:ProtectedConverter x:Key="ProtectedConverter" />
+        <s:BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+        <!-- Botón de la barra de herramientas: icono arriba, texto debajo, hover/selección sobrios -->
+        <Style x:Key="UA.ToolButton" TargetType="{x:Type ui:Button}" BasedOn="{StaticResource {x:Type ui:Button}}">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="Transparent" />
+            <Setter Property="Foreground" Value="{StaticResource UA.Brush.TextSecondary}" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="Margin" Value="1,0" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+            <Setter Property="FontSize" Value="12.5" />
+            <Setter Property="Cursor" Value="Hand" />
+        </Style>
+
+        <Style x:Key="UA.ToolChrome" TargetType="{x:Type ui:Button}" BasedOn="{StaticResource UA.ToolButton}">
+            <Setter Property="MinWidth" Value="40" />
+            <Setter Property="Padding" Value="10,0" />
+        </Style>
+    </ui:FluentWindow.Resources>
+
+    <Grid Margin="14,0,14,12">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="48" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+        <ui:TitleBar Grid.Row="0" Title="{Binding WindowTitle}" Background="Transparent" />
+
+        <!-- Barra superior de herramientas -->
+        <Border Grid.Row="1" Style="{StaticResource UA.Toolbar}" Padding="10,7" Margin="0,4,0,10">
+            <DockPanel LastChildFill="True">
+                <StackPanel DockPanel.Dock="Left" Orientation="Horizontal" VerticalAlignment="Center" Margin="4,0,6,0">
+                    <Image Source="pack://application:,,,/UltraArchive;component/Assets/UltraArchive-logo.png"
+                           Width="46" Height="46" Margin="0,0,12,0" Stretch="Uniform"
+                           RenderOptions.BitmapScalingMode="HighQuality" VerticalAlignment="Center">
+                        <Image.Effect>
+                            <DropShadowEffect BlurRadius="16" ShadowDepth="0" Opacity="0.45" Color="#0A1830" />
+                        </Image.Effect>
+                    </Image>
+                    <TextBlock Text="Ultra" Style="{StaticResource UA.BrandMark}" FontSize="17" />
+                    <TextBlock Text="Archive" Style="{StaticResource UA.BrandMark}" FontSize="17" Foreground="{StaticResource UA.Brush.Cyan}" FontWeight="Light" />
+                    <Rectangle Width="1" Margin="14,9" Fill="{StaticResource UA.Brush.StrokeSoft}" />
+                </StackPanel>
+
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center">
+                    <Rectangle Width="1" Margin="8,10" Fill="{StaticResource UA.Brush.StrokeSoft}" />
+                    <ui:Button Style="{StaticResource UA.ToolChrome}" Content="{x:Static res:Strings.ButtonShellIntegration}"
+                               Command="{Binding ShellIntegrationCommand}" ToolTip="{x:Static res:Strings.ButtonShellIntegrationTooltip}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="WindowApps24" /></ui:Button.Icon>
+                    </ui:Button>
+                    <ui:Button Style="{StaticResource UA.ToolChrome}" Command="{Binding ToggleThemeCommand}" ToolTip="Cambiar tema claro/oscuro">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="WeatherMoon24" /></ui:Button.Icon>
+                    </ui:Button>
+                </StackPanel>
+
+                <WrapPanel Orientation="Horizontal">
+                    <ui:Button Style="{StaticResource UA.ToolButton}" Content="{x:Static res:Strings.ButtonOpen}" Command="{Binding OpenCommand}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="FolderOpen24" /></ui:Button.Icon>
+                    </ui:Button>
+                    <ui:Button Style="{StaticResource UA.ToolButton}" Content="{x:Static res:Strings.ButtonAdd}" Command="{Binding AddCommand}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="Add24" /></ui:Button.Icon>
+                    </ui:Button>
+                    <ui:Button Style="{StaticResource UA.ToolButton}" Content="{x:Static res:Strings.ButtonExtract}" Command="{Binding ExtractCommand}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="FolderArrowUp24" /></ui:Button.Icon>
+                    </ui:Button>
+                    <ui:Button Style="{StaticResource UA.ToolButton}" Content="{x:Static res:Strings.ButtonCompress}" Command="{Binding CompressCommand}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="FolderZip24" /></ui:Button.Icon>
+                    </ui:Button>
+                    <ui:Button Style="{StaticResource UA.ToolButton}" Content="{x:Static res:Strings.ButtonPassword}" Command="{Binding PasswordCommand}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="Key24" /></ui:Button.Icon>
+                    </ui:Button>
+                    <ui:Button Style="{StaticResource UA.ToolButton}" Content="{x:Static res:Strings.ButtonTest}" Command="{Binding TestCommand}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="CheckmarkCircle24" /></ui:Button.Icon>
+                    </ui:Button>
+                    <ui:Button Style="{StaticResource UA.ToolButton}" Content="{x:Static res:Strings.ButtonIso}" Command="{Binding IsoCommand}"
+                               ToolTip="{x:Static res:Strings.ButtonIsoTooltip}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="Cd16" /></ui:Button.Icon>
+                    </ui:Button>
+                    <ui:Button Style="{StaticResource UA.ToolButton}" Content="{x:Static res:Strings.ButtonDelete}" Command="{Binding DeleteCommand}">
+                        <ui:Button.Icon><ui:SymbolIcon Symbol="Delete24" /></ui:Button.Icon>
+                    </ui:Button>
+                </WrapPanel>
+            </DockPanel>
+        </Border>
+
+        <!-- Árbol de carpetas + tabla de la carpeta seleccionada -->
+        <Grid Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="248" MinWidth="150" />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Style="{StaticResource UA.Card}" Padding="10">
+                <DockPanel>
+                    <TextBlock DockPanel.Dock="Top" Text="{x:Static res:Strings.FolderTreeHeader}" Style="{StaticResource UA.SectionHeader}" />
+                    <TreeView x:Name="FolderTree"
+                              ItemsSource="{Binding FolderRoots}"
+                              SelectedItemChanged="FolderTree_SelectedItemChanged"
+                              BorderThickness="0" Background="Transparent">
+                        <TreeView.ItemContainerStyle>
+                            <Style TargetType="TreeViewItem" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                            </Style>
+                        </TreeView.ItemContainerStyle>
+                        <TreeView.Resources>
+                            <HierarchicalDataTemplate DataType="{x:Type vm:ArchiveTreeNode}" ItemsSource="{Binding Children}">
+                                <StackPanel Orientation="Horizontal">
+                                    <ui:SymbolIcon Symbol="Folder24" Margin="0,0,7,0" FontSize="14" Foreground="{StaticResource UA.Brush.Cyan}" />
+                                    <TextBlock Text="{Binding Name}" VerticalAlignment="Center" />
+                                </StackPanel>
+                            </HierarchicalDataTemplate>
+                        </TreeView.Resources>
+                    </TreeView>
+                </DockPanel>
+            </Border>
+
+            <GridSplitter Grid.Column="1" Width="10" HorizontalAlignment="Center" VerticalAlignment="Stretch"
+                          ResizeBehavior="PreviousAndNext" />
+
+            <Border Grid.Column="2" Style="{StaticResource UA.Card}" Padding="6" ClipToBounds="True">
+                <DataGrid Grid.Column="2" x:Name="EntriesGrid"
+                          ItemsSource="{Binding Entries}"
+                          AutoGenerateColumns="False"
+                          IsReadOnly="True"
+                          HeadersVisibility="Column"
+                          CanUserAddRows="False"
+                          SelectionMode="Extended"
+                          Background="Transparent"
+                          SelectionChanged="EntriesGrid_SelectionChanged"
+                          MouseDoubleClick="EntriesGrid_MouseDoubleClick">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header="{x:Static res:Strings.ColumnName}" Binding="{Binding Name}" Width="2.4*" />
+                        <DataGridTextColumn Header="{x:Static res:Strings.ColumnType}" Binding="{Binding IsDirectory, Converter={StaticResource EntryTypeConverter}}" Width="*" />
+                        <DataGridTextColumn Header="{x:Static res:Strings.ColumnSize}" Binding="{Binding UncompressedSize, Converter={StaticResource ByteSizeConverter}}" Width="*" />
+                        <DataGridTextColumn Header="{x:Static res:Strings.ColumnCompressedSize}" Binding="{Binding CompressedSize, Converter={StaticResource ByteSizeConverter}}" Width="*" />
+                        <DataGridTextColumn Header="{x:Static res:Strings.ColumnDate}" Binding="{Binding LastModifiedUtc, StringFormat={}{0:g}}" Width="*" />
+                        <DataGridTextColumn Header="{x:Static res:Strings.ColumnMethod}" Binding="{Binding CompressionMethod}" Width="*" />
+                        <DataGridTextColumn Header="{x:Static res:Strings.ColumnProtected}" Binding="{Binding IsEncrypted, Converter={StaticResource ProtectedConverter}}" Width="0.8*" />
+                    </DataGrid.Columns>
+                </DataGrid>
+            </Border>
+        </Grid>
+
+        <!-- Barra inferior de estado -->
+        <Border Grid.Row="3" Style="{StaticResource UA.StatusBar}" Padding="14,9" Margin="0,10,0,0">
+            <DockPanel LastChildFill="True">
+                <!-- Marca de ASTRIM, fijada a la esquina inferior derecha -->
+                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal" VerticalAlignment="Center" Margin="12,0,0,0">
+                    <Rectangle Width="1" Margin="0,7" Fill="{StaticResource UA.Brush.StrokeSoft}" />
+                    <Border Width="18" Height="18" CornerRadius="4" Margin="12,0,7,0" ClipToBounds="True"
+                            VerticalAlignment="Center" BorderBrush="{StaticResource UA.Brush.StrokeSoft}" BorderThickness="1">
+                        <Image Source="pack://application:,,,/UltraArchive;component/Assets/ASTRIM-logo.png"
+                               Stretch="UniformToFill" RenderOptions.BitmapScalingMode="HighQuality" />
+                    </Border>
+                    <TextBlock Text="ASTRIM" VerticalAlignment="Center" FontSize="11" FontWeight="SemiBold"
+                               Foreground="{StaticResource UA.Brush.TextMuted}" />
+                </StackPanel>
+
+                <ui:Button DockPanel.Dock="Right" Margin="10,0,0,0" Padding="10,4" Appearance="Secondary"
+                           Content="{x:Static res:Strings.ButtonCancelOperation}"
+                           Command="{Binding CancelOperationCommand}"
+                           Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <ProgressBar DockPanel.Dock="Right" Width="180" Height="4" Margin="10,0,0,0" VerticalAlignment="Center"
+                             IsIndeterminate="{Binding IsProgressIndeterminate}"
+                             Value="{Binding ProgressPercent, Mode=OneWay}" Minimum="0" Maximum="100"
+                             Visibility="{Binding IsBusy, Converter={StaticResource BoolToVisibilityConverter}}" />
+                <Border Style="{StaticResource UA.StatusChip}">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="7" Height="7" Margin="0,0,8,0" VerticalAlignment="Center" Fill="{StaticResource UA.Brush.Cyan}" />
+                        <TextBlock Text="{Binding StatusMessage}" TextTrimming="CharacterEllipsis" VerticalAlignment="Center"
+                                   Foreground="{StaticResource UA.Brush.TextSecondary}" FontSize="12" />
+                    </StackPanel>
+                </Border>
+            </DockPanel>
+        </Border>
+    </Grid>
+</ui:FluentWindow>

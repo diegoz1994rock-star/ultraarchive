@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype"><value>text/microsoft-resx</value></resheader>
+  <resheader name="version"><value>2.0</value></resheader>
+  <resheader name="reader"><value>System.Resources.ResXResourceReader, System.Windows.Forms</value></resheader>
+  <resheader name="writer"><value>System.Resources.ResXResourceWriter, System.Windows.Forms</value></resheader>
+
+  <data name="AppTitle" xml:space="preserve"><value>UltraArchive</value></data>
+
+  <data name="ButtonAdd" xml:space="preserve"><value>Add</value></data>
+  <data name="ButtonExtract" xml:space="preserve"><value>Extract</value></data>
+  <data name="ButtonOpen" xml:space="preserve"><value>Open</value></data>
+  <data name="ButtonCompress" xml:space="preserve"><value>Compress</value></data>
+  <data name="ButtonPassword" xml:space="preserve"><value>Password</value></data>
+  <data name="ButtonTest" xml:space="preserve"><value>Test</value></data>
+  <data name="ButtonIso" xml:space="preserve"><value>ISO</value></data>
+  <data name="ButtonDelete" xml:space="preserve"><value>Delete</value></data>
+
+  <data name="ColumnName" xml:space="preserve"><value>Name</value></data>
+  <data name="ColumnType" xml:space="preserve"><value>Type</value></data>
+  <data name="ColumnSize" xml:space="preserve"><value>Size</value></data>
+  <data name="ColumnCompressedSize" xml:space="preserve"><value>Compressed size</value></data>
+  <data name="ColumnDate" xml:space="preserve"><value>Date</value></data>
+  <data name="ColumnMethod" xml:space="preserve"><value>Method</value></data>
+  <data name="ColumnProtected" xml:space="preserve"><value>Protected</value></data>
+
+  <data name="StatusReady" xml:space="preserve"><value>Ready. Use "Open" to browse an archive or "Compress" to create a new one.</value></data>
+  <data name="StatusNoFileOpen" xml:space="preserve"><value>No file is currently open.</value></data>
+  <data name="StatusFormatDetectedNoEngine" xml:space="preserve"><value>Detected format: {0}. The reading engine for this format will be added in a later development phase.</value></data>
+  <data name="StatusArchiveOpened" xml:space="preserve"><value>{0} archive opened: {1} item(s).</value></data>
+  <data name="StatusUnknownFormat" xml:space="preserve"><value>Could not determine the format of '{0}'. It may not be a supported archive, or it may be corrupted.</value></data>
+  <data name="StatusFeatureComingSoon" xml:space="preserve"><value>This feature is not available yet at this stage of development.</value></data>
+  <data name="StatusOpenCancelled" xml:space="preserve"><value>Operation cancelled.</value></data>
+
+  <data name="DialogOpenArchiveTitle" xml:space="preserve"><value>Open archive or ISO image</value></data>
+  <data name="DialogOpenArchiveFilter" xml:space="preserve"><value>Supported files|*.zip;*.7z;*.rar;*.tar;*.gz;*.tgz;*.bz2;*.iso|All files|*.*</value></data>
+  <data name="DialogOpenIsoTitle" xml:space="preserve"><value>Open ISO disc image</value></data>
+  <data name="DialogOpenIsoFilter" xml:space="preserve"><value>Disc images (*.iso)|*.iso|All files|*.*</value></data>
+  <data name="ButtonIsoTooltip" xml:space="preserve"><value>Open an ISO9660 disc image (you can also use the “Open” button)</value></data>
+  <data name="DialogSelectFolderTitle" xml:space="preserve"><value>Select destination folder</value></data>
+
+  <data name="TypeFolder" xml:space="preserve"><value>Folder</value></data>
+  <data name="TypeFile" xml:space="preserve"><value>File</value></data>
+  <data name="ProtectedYes" xml:space="preserve"><value>Yes</value></data>
+  <data name="ProtectedNo" xml:space="preserve"><value>No</value></data>
+
+  <data name="ThemeToggleToLight" xml:space="preserve"><value>Switch to light theme</value></data>
+  <data name="ThemeToggleToDark" xml:space="preserve"><value>Switch to dark theme</value></data>
+
+  <data name="StatusExtracting" xml:space="preserve"><value>Extracting...</value></data>
+  <data name="StatusExtractComplete" xml:space="preserve"><value>Extraction complete: {0} item(s).</value></data>
+  <data name="StatusExtractCompleteWithBlocked" xml:space="preserve"><value>Extraction complete: {0} item(s). {1} entr(y/ies) blocked for security (paths outside the destination).</value></data>
+  <data name="StatusExtractCancelled" xml:space="preserve"><value>Extraction cancelled by the user.</value></data>
+  <data name="StatusExtractSkippedSuffix" xml:space="preserve"><value> {0} skipped due to name conflicts.</value></data>
+  <data name="StatusTesting" xml:space="preserve"><value>Checking integrity...</value></data>
+  <data name="StatusTestOk" xml:space="preserve"><value>The archive passed the integrity check.</value></data>
+  <data name="StatusTestFailed" xml:space="preserve"><value>Integrity errors were found: the archive may be corrupted.</value></data>
+  <data name="StatusCompressing" xml:space="preserve"><value>Compressing...</value></data>
+  <data name="StatusCompressComplete" xml:space="preserve"><value>Archive created successfully: {0}</value></data>
+  <data name="StatusCompressCancelled" xml:space="preserve"><value>Compression cancelled by the user.</value></data>
+  <data name="ButtonCancelOperation" xml:space="preserve"><value>Cancel</value></data>
+
+  <data name="ShellProgressTitleExtract" xml:space="preserve"><value>UltraArchive — Extracting</value></data>
+  <data name="ShellProgressElapsed" xml:space="preserve"><value>Elapsed time: {0}</value></data>
+  <data name="ShellProgressButtonBackground" xml:space="preserve"><value>Background</value></data>
+  <data name="ShellProgressPreparing" xml:space="preserve"><value>Preparing…</value></data>
+
+  <data name="CompressWindowTitle" xml:space="preserve"><value>Compress</value></data>
+  <data name="CompressLabelSources" xml:space="preserve"><value>Files and folders to compress</value></data>
+  <data name="CompressButtonAddFiles" xml:space="preserve"><value>Add files...</value></data>
+  <data name="CompressButtonAddFolder" xml:space="preserve"><value>Add folder...</value></data>
+  <data name="CompressButtonRemoveSelected" xml:space="preserve"><value>Remove</value></data>
+  <data name="CompressDropHint" xml:space="preserve"><value>Drag files and folders here
+or click "Add files…"</value></data>
+  <data name="CompressDropOverlay" xml:space="preserve"><value>Drop to add</value></data>
+  <data name="CompressLabelOutput" xml:space="preserve"><value>Output file</value></data>
+  <data name="CompressButtonBrowseOutput" xml:space="preserve"><value>Browse...</value></data>
+  <data name="CompressLabelFormat" xml:space="preserve"><value>Format</value></data>
+  <data name="CompressLabelLevel" xml:space="preserve"><value>Compression level</value></data>
+  <data name="CompressCheckboxPreserveStructure" xml:space="preserve"><value>Keep folder structure</value></data>
+  <data name="CompressCheckboxDeleteSource" xml:space="preserve"><value>Delete original files when done</value></data>
+  <data name="CompressConfirmDeleteSource" xml:space="preserve"><value>The {0} source item(s) will be deleted after compressing successfully. This cannot be undone. Continue?</value></data>
+  <data name="CompressButtonStart" xml:space="preserve"><value>Compress</value></data>
+  <data name="CompressStatusReady" xml:space="preserve"><value>Add files or folders and choose where to save the result.</value></data>
+  <data name="CompressNoteFutureFeatures" xml:space="preserve"><value>Volume splitting will be available in a later phase.</value></data>
+  <data name="CompressErrorNoSources" xml:space="preserve"><value>Add at least one file or folder before compressing.</value></data>
+  <data name="CompressErrorFormatNotCreatable" xml:space="preserve"><value>UltraArchive can't create archives in that format. RAR is read-only: the proprietary format's license forbids building a compatible compressor. Use 7Z or ZIP.</value></data>
+  <data name="CompressErrorSplitInvalid" xml:space="preserve"><value>Check the split options: the size per part or the number of parts isn't valid.</value></data>
+  <data name="CompressNoteSplitUnavailable" xml:space="preserve"><value>Splitting into parts is only available when creating 7Z with a verified 7zr.exe.</value></data>
+  <data name="CompressLabelSplit" xml:space="preserve"><value>Split archive</value></data>
+  <data name="CompressLabelSplitPartSize" xml:space="preserve"><value>Size per part</value></data>
+  <data name="CompressLabelSplitPartCount" xml:space="preserve"><value>Number of parts</value></data>
+  <data name="CompressStatusVerifying" xml:space="preserve"><value>Verifying the split archive…</value></data>
+  <data name="CompressSplitVerifyOk" xml:space="preserve"><value>✓ Verification OK</value></data>
+  <data name="CompressSplitVerifyFailed" xml:space="preserve"><value>✗ Verification found errors in the archive</value></data>
+  <data name="CompressSplitVerifyError" xml:space="preserve"><value>⚠ Could not verify: {0}</value></data>
+  <data name="CompressStatusSplitComplete" xml:space="preserve"><value>Compression complete.
+Original data: {0}
+Parts created: {1}
+Max size per part: {2}
+Status: {3}</value></data>
+  <data name="CompressErrorNoOutput" xml:space="preserve"><value>Choose where to save the resulting archive.</value></data>
+  <data name="CompressCheckboxEncrypt" xml:space="preserve"><value>Protect with a password (AES-256 encryption)</value></data>
+  <data name="CompressLabelPassword" xml:space="preserve"><value>Password</value></data>
+  <data name="CompressLabelConfirmPassword" xml:space="preserve"><value>Repeat password</value></data>
+  <data name="CompressNoteEncryptionUnavailable" xml:space="preserve"><value>The selected format does not support a password on creation. Only ZIP supports AES-256; encrypted 7Z arrives in a later phase (7za.exe).</value></data>
+  <data name="CompressNoteEncryptionZipNames" xml:space="preserve"><value>ZIP with AES-256 encrypts file contents, but the list of file names stays visible (a format limitation).</value></data>
+  <data name="CompressErrorPasswordEmpty" xml:space="preserve"><value>Enter a password or turn off protection.</value></data>
+  <data name="CompressErrorPasswordMismatch" xml:space="preserve"><value>The two passwords do not match.</value></data>
+
+  <data name="PasswordDialogTitle" xml:space="preserve"><value>Password required</value></data>
+  <data name="PasswordDialogPrompt" xml:space="preserve"><value>'{0}' is password protected. Enter the password to continue:</value></data>
+  <data name="PasswordDialogPromptRetry" xml:space="preserve"><value>The password entered for '{0}' is not correct. Try again:</value></data>
+  <data name="PasswordDialogOk" xml:space="preserve"><value>OK</value></data>
+  <data name="PasswordDialogCancel" xml:space="preserve"><value>Cancel</value></data>
+
+  <data name="CollisionDialogTitle" xml:space="preserve"><value>File conflict</value></data>
+  <data name="CollisionDialogPrompt" xml:space="preserve"><value>A file named "{0}" already exists in the destination folder. What do you want to do?</value></data>
+  <data name="CollisionDialogApplyToAll" xml:space="preserve"><value>Apply to remaining conflicts</value></data>
+  <data name="CollisionDialogOverwrite" xml:space="preserve"><value>Overwrite</value></data>
+  <data name="CollisionDialogSkip" xml:space="preserve"><value>Skip</value></data>
+  <data name="CollisionDialogRename" xml:space="preserve"><value>Keep both</value></data>
+  <data name="CollisionDialogCancel" xml:space="preserve"><value>Cancel</value></data>
+
+  <data name="FolderTreeHeader" xml:space="preserve"><value>Folders</value></data>
+
+  <data name="StatusAdding" xml:space="preserve"><value>Adding items...</value></data>
+  <data name="StatusAddComplete" xml:space="preserve"><value>{0} item(s) added to the archive.</value></data>
+  <data name="StatusAddNotMutable" xml:space="preserve"><value>The current format does not support adding files without fully recreating it; use "Compress" to create a new archive.</value></data>
+  <data name="StatusDeleting" xml:space="preserve"><value>Deleting selected items...</value></data>
+  <data name="StatusDeleteComplete" xml:space="preserve"><value>{0} item(s) deleted from the archive.</value></data>
+  <data name="StatusDeleteNotMutable" xml:space="preserve"><value>The current format does not support deleting entries without recreating the whole archive.</value></data>
+  <data name="StatusDeleteNoSelection" xml:space="preserve"><value>Select one or more entries in the table first to delete them.</value></data>
+  <data name="StatusPasswordSet" xml:space="preserve"><value>Password saved for this session. It will be used automatically for the next operation on this archive.</value></data>
+  <data name="StatusPasswordCancelled" xml:space="preserve"><value>No password was entered.</value></data>
+
+  <data name="ButtonShellIntegration" xml:space="preserve"><value>Explorer</value></data>
+  <data name="ButtonShellIntegrationTooltip" xml:space="preserve"><value>Add or remove “Open with UltraArchive” and “Extract here/to…” in the Explorer menu (current user only, reversible)</value></data>
+  <data name="ShellIntegrationConfirmInstall" xml:space="preserve"><value>Add UltraArchive to the Explorer context menu and to “Open with”? This only writes to your user profile and can be removed at any time.</value></data>
+  <data name="ShellIntegrationConfirmUninstall" xml:space="preserve"><value>Remove UltraArchive's Explorer integration? Only the entries created by UltraArchive will be deleted.</value></data>
+  <data name="ShellIntegrationInstalled" xml:space="preserve"><value>Explorer integration installed. You may need to restart Explorer to see the changes.</value></data>
+  <data name="ShellIntegrationUninstalled" xml:space="preserve"><value>Explorer integration removed.</value></data>
+  <data name="ShellIntegrationError" xml:space="preserve"><value>Could not change Explorer integration: {0}</value></data>
+</root>

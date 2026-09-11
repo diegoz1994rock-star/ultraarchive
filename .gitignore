@@ -1,0 +1,27 @@
+## .NET
+bin/
+obj/
+*.user
+.vs/
+*.suo
+*.userosscache
+*.sln.docstates
+
+## Resultados de pruebas
+TestResults/
+
+## Artefactos de publicación/instalador (Fase 8)
+publish/
+*.msi
+*.exe
+!tools/*.exe
+
+## Extensión de shell (menú moderno Win11) — artefactos de compilación, no el código fuente
+build/shellext/out/
+build/shellext/staging/
+*.msix
+*.wixpdb
+
+## Logs y carpetas de trabajo de las pruebas de reinstalación (build/shellext/reinstall.ps1)
+_reinstall/
+*.log

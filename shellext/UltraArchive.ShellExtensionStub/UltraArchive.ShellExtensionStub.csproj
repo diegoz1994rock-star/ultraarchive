@@ -1,0 +1,23 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Ejecutable "stub" exigido por el AppxManifest (windows.fullTrustApplication).
+    NUNCA se ejecuta: la DLL COM corre en un proceso surrogate del sistema.
+    Solo existe para que el paquete MSIX tenga un <Application> con Executable válido.
+  -->
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>x64</Platforms>
+    <PublishAot>true</PublishAot>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <IlcOptimizationPreference>Size</IlcOptimizationPreference>
+    <AssemblyName>UltraArchive.ShellExtensionStub</AssemblyName>
+    <RootNamespace>UltraArchive.ShellExtensionStub</RootNamespace>
+  </PropertyGroup>
+
+</Project>

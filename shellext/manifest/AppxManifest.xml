@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Paquete MSIX mínimo de UltraArchive.ShellExtension.
+
+  Da identidad de paquete a la DLL COM (requisito de Windows 11 para el menú contextual moderno)
+  y declara el manejador IExplorerCommand sobre archivos (*) y carpetas (Directory).
+
+  La DLL y el stub se empaquetan DENTRO del .msix firmado (install.ps1 los copia al staging antes
+  de makeappx), así la firma cubre todo el código ejecutable.
+
+  CLSID del manejador: A99F6CA6-1436-4063-BA8A-156692A771A8  (fijo; también en UltraArchiveRootCommand.CLSID)
+-->
+<Package
+  xmlns="http://schemas.microsoft.com/appx/manifest/foundation/windows10"
+  xmlns:uap="http://schemas.microsoft.com/appx/manifest/uap/windows10"
+  xmlns:rescap="http://schemas.microsoft.com/appx/manifest/foundation/windows10/restrictedcapabilities"
+  xmlns:com="http://schemas.microsoft.com/appx/manifest/com/windows10"
+  xmlns:desktop4="http://schemas.microsoft.com/appx/manifest/desktop/windows10/4"
+  xmlns:desktop5="http://schemas.microsoft.com/appx/manifest/desktop/windows10/5"
+  IgnorableNamespaces="uap rescap com desktop4 desktop5">
+
+  <Identity
+    Name="UltraArchive.ShellExtension"
+    Publisher="CN=UltraArchive"
+    Version="1.0.1.0"
+    ProcessorArchitecture="x64" />
+
+  <Properties>
+    <DisplayName>UltraArchive Shell Extension</DisplayName>
+    <PublisherDisplayName>UltraArchive</PublisherDisplayName>
+    <Logo>Assets\StoreLogo.png</Logo>
+  </Properties>
+
+  <Dependencies>
+    <TargetDeviceFamily Name="Windows.Desktop"
+                        MinVersion="10.0.19041.0"
+                        MaxVersionTested="10.0.26100.0" />
+  </Dependencies>
+
+  <Resources>
+    <Resource Language="es-es" />
+    <Resource Language="en-us" />
+  </Resources>
+
+  <Applications>
+    <Application Id="UltraArchiveContextMenu"
+                 Executable="UltraArchive.ShellExtensionStub.exe"
+                 EntryPoint="windows.fullTrustApplication">
+      <uap:VisualElements
+        DisplayName="UltraArchive Shell Extension"
+        Description="Menú contextual de UltraArchive para el Explorador de Windows 11"
+        BackgroundColor="transparent"
+        Square150x150Logo="Assets\Square150x150Logo.png"
+        Square44x44Logo="Assets\Square44x44Logo.png"
+        AppListEntry="none" />
+
+      <Extensions>
+        <!-- Servidor COM: aloja UltraArchive.ShellExtension.dll en un proceso surrogate. -->
+        <com:Extension Category="windows.comServer">
+          <com:ComServer>
+            <com:SurrogateServer DisplayName="UltraArchive Context Menu Handler">
+              <com:Class
+                Id="A99F6CA6-1436-4063-BA8A-156692A771A8"
+                Path="UltraArchive.ShellExtension.dll"
+                ThreadingModel="STA" />
+            </com:SurrogateServer>
+          </com:ComServer>
+        </com:Extension>
+
+        <!-- Menú contextual del Explorador (moderno, Windows 11). -->
+        <desktop4:Extension Category="windows.fileExplorerContextMenus">
+          <desktop4:FileExplorerContextMenus>
+            <desktop5:ItemType Type="*">
+              <desktop5:Verb Id="UltraArchive"
+                Clsid="A99F6CA6-1436-4063-BA8A-156692A771A8" />
+            </desktop5:ItemType>
+            <desktop5:ItemType Type="Directory">
+              <desktop5:Verb Id="UltraArchive"
+                Clsid="A99F6CA6-1436-4063-BA8A-156692A771A8" />
+            </desktop5:ItemType>
+          </desktop4:FileExplorerContextMenus>
+        </desktop4:Extension>
+      </Extensions>
+    </Application>
+  </Applications>
+
+  <Capabilities>
+    <rescap:Capability Name="runFullTrust" />
+  </Capabilities>
+</Package>

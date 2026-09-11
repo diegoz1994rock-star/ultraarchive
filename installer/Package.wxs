@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  Definicion del MSI de UltraArchive (WiX v5). Ver UltraArchive.Installer.wixproj para compilarlo.
+
+  Instala la distribucion Release autocontenida (publish/UltraArchive/, incluye el runtime .NET 8 y
+  tools/7zr.exe) en "%ProgramFiles%\UltraArchive", crea un acceso directo en el menu Inicio y la
+  entrada de "Agregar o quitar programas".
+
+  Menu contextual "Ultra Archive": el MSI escribe DIRECTAMENTE las claves de registro bajo
+  HKLM\Software\Classes (submenu desplegable sobre archivos y carpetas + "Abrir con"). Es la misma
+  estructura que crea RegistryShellIntegrationService para el modo por-usuario (HKCU), pero aqui la
+  pone el instalador de forma declarativa: se registra al instalar y Windows Installer la elimina
+  integramente al desinstalar (sin lanzar procesos, con rollback correcto). La ruta del ejecutable
+  es [INSTALLFOLDER]UltraArchive.exe, resuelta en la maquina destino (no rutas del PC de desarrollo).
+-->
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs"
+     xmlns:util="http://wixtoolset.org/schemas/v4/wxs/util"
+     xmlns:ui="http://wixtoolset.org/schemas/v4/wxs/ui">
+
+  <Package Name="UltraArchive"
+           Manufacturer="UltraArchive"
+           Version="$(var.ProductVersion)"
+           UpgradeCode="9F4A1E7C-4C2B-4C0E-9E3A-9B1D2F6A7C51"
+           Scope="perMachine"
+           Compressed="true"
+           Language="3082"
+           Codepage="1252">
+
+    <MajorUpgrade DowngradeErrorMessage="Ya hay instalada una version mas reciente de UltraArchive." />
+    <MediaTemplate EmbedCab="true" />
+
+    <Icon Id="UltraArchive.ico" SourceFile="$(var.PublishDir)\UltraArchive.exe" />
+    <Property Id="ARPPRODUCTICON" Value="UltraArchive.ico" />
+    <Property Id="ARPHELPLINK" Value="https://github.com/" />
+    <!-- ARPNOMODIFY / ARPNOREPAIR los fija WixUI_InstallDir. -->
+    <Property Id="ARPNOREPAIR" Value="1" />
+
+    <!-- Payload de 64 bits (win-x64 autocontenido) -> Program Files real de 64 bits. -->
+    <StandardDirectory Id="ProgramFiles64Folder">
+      <Directory Id="INSTALLFOLDER" Name="UltraArchive" />
+    </StandardDirectory>
+
+    <StandardDirectory Id="ProgramMenuFolder">
+      <Directory Id="AppShortcutFolder" Name="UltraArchive" />
+    </StandardDirectory>
+
+    <SetProperty Id="ARPINSTALLLOCATION" Value="[INSTALLFOLDER]" After="CostFinalize" />
+
+    <!-- ================================================================================= -->
+    <!--  Asistente de instalacion con marca ASTRIM                                          -->
+    <!--  WixUI_InstallDir: Bienvenida -> Licencia -> Carpeta (Siguiente) ->                 -->
+    <!--  "Listo para instalar" (Instalar) -> Progreso -> Finalizado.                        -->
+    <!--  Las imagenes salen: DialogBmp en Bienvenida/Finalizado (panel izquierdo con la     -->
+    <!--  imagen de ASTRIM), BannerBmp en la cabecera de las pantallas intermedias.          -->
+    <!-- ================================================================================= -->
+    <ui:WixUI Id="WixUI_InstallDir" InstallDirectory="INSTALLFOLDER" />
+    <WixVariable Id="WixUIDialogBmp" Value="Assets\DialogBmp.png" />
+    <WixVariable Id="WixUIBannerBmp" Value="Assets\BannerBmp.png" />
+    <WixVariable Id="WixUILicenseRtf" Value="Assets\License.rtf" />
+
+    <Feature Id="Main" Title="UltraArchive" Level="1">
+      <ComponentGroupRef Id="UltraArchiveFiles" />
+      <ComponentRef Id="StartMenuShortcut" />
+      <ComponentRef Id="ContextMenuIntegration" />
+    </Feature>
+
+    <Component Id="StartMenuShortcut" Directory="AppShortcutFolder" Guid="7C2E9A55-6B1F-4D8A-8C3E-2A9D4F1B6E70">
+      <Shortcut Id="UltraArchiveStartMenu"
+                Name="UltraArchive"
+                Target="[INSTALLFOLDER]UltraArchive.exe"
+                WorkingDirectory="INSTALLFOLDER" />
+      <RemoveFolder Id="RemoveAppShortcutFolder" Directory="AppShortcutFolder" On="uninstall" />
+      <RegistryValue Root="HKCU" Key="Software\UltraArchive" Name="installed" Type="integer" Value="1" KeyPath="true" />
+    </Component>
+
+    <!-- ================================================================================= -->
+    <!--  Submenu contextual "Ultra Archive" (HKLM, para todos los usuarios de la maquina)  -->
+    <!-- ================================================================================= -->
+    <Component Id="ContextMenuIntegration" Directory="INSTALLFOLDER" Guid="B3D9E2F1-6A47-4C8E-9F02-1D7C4A5B8E63">
+
+      <!-- Submenu sobre CUALQUIER archivo: compresion (siempre) + extraccion (AppliesTo) -->
+      <RegistryKey Root="HKLM" Key="Software\Classes\*\shell\UltraArchive">
+        <RegistryValue Type="string" Name="MUIVerb" Value="Ultra Archive" KeyPath="yes" />
+        <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+        <RegistryValue Type="string" Name="SubCommands" Value="" />
+
+        <RegistryKey Key="shell\10_open">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Abrir con Ultra Archive" />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="AppliesTo" Value="System.FileExtension:=&quot;.zip&quot; OR System.FileExtension:=&quot;.7z&quot; OR System.FileExtension:=&quot;.rar&quot; OR System.FileExtension:=&quot;.tar&quot; OR System.FileExtension:=&quot;.gz&quot; OR System.FileExtension:=&quot;.tgz&quot; OR System.FileExtension:=&quot;.bz2&quot; OR System.FileExtension:=&quot;.iso&quot;" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\11_extractfiles">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Extraer ficheros..." />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="AppliesTo" Value="System.FileExtension:=&quot;.zip&quot; OR System.FileExtension:=&quot;.7z&quot; OR System.FileExtension:=&quot;.rar&quot; OR System.FileExtension:=&quot;.tar&quot; OR System.FileExtension:=&quot;.gz&quot; OR System.FileExtension:=&quot;.tgz&quot; OR System.FileExtension:=&quot;.bz2&quot; OR System.FileExtension:=&quot;.iso&quot;" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --extract-to &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\12_extracthere">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Extraer aqui" />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="AppliesTo" Value="System.FileExtension:=&quot;.zip&quot; OR System.FileExtension:=&quot;.7z&quot; OR System.FileExtension:=&quot;.rar&quot; OR System.FileExtension:=&quot;.tar&quot; OR System.FileExtension:=&quot;.gz&quot; OR System.FileExtension:=&quot;.tgz&quot; OR System.FileExtension:=&quot;.bz2&quot; OR System.FileExtension:=&quot;.iso&quot;" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --extract-here-flat &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\13_extractsub">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Extraer a una subcarpeta con el nombre del archivo" />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="AppliesTo" Value="System.FileExtension:=&quot;.zip&quot; OR System.FileExtension:=&quot;.7z&quot; OR System.FileExtension:=&quot;.rar&quot; OR System.FileExtension:=&quot;.tar&quot; OR System.FileExtension:=&quot;.gz&quot; OR System.FileExtension:=&quot;.tgz&quot; OR System.FileExtension:=&quot;.bz2&quot; OR System.FileExtension:=&quot;.iso&quot;" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --extract-here &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\30_compress">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir..." />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\31_compresshere">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir aqui" />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress-here &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\32_zip">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir como .ZIP" />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress-zip &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\33_7z">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir como .7Z" />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress-7z &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\34_split">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir y dividir..." />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress-split &quot;%1&quot;" />
+        </RegistryKey>
+      </RegistryKey>
+
+      <!-- Submenu sobre CARPETAS: solo compresion -->
+      <RegistryKey Root="HKLM" Key="Software\Classes\Directory\shell\UltraArchive">
+        <RegistryValue Type="string" Name="MUIVerb" Value="Ultra Archive" />
+        <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+        <RegistryValue Type="string" Name="SubCommands" Value="" />
+
+        <RegistryKey Key="shell\30_compress">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir..." />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\31_compresshere">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir aqui" />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress-here &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\32_zip">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir como .ZIP" />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress-zip &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\33_7z">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir como .7Z" />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress-7z &quot;%1&quot;" />
+        </RegistryKey>
+
+        <RegistryKey Key="shell\34_split">
+          <RegistryValue Type="string" Name="MUIVerb" Value="Comprimir y dividir..." />
+          <RegistryValue Type="string" Name="Icon" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot;,0" />
+          <RegistryValue Type="string" Name="MultiSelectModel" Value="Player" />
+          <RegistryValue Key="command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; --compress-split &quot;%1&quot;" />
+        </RegistryKey>
+      </RegistryKey>
+
+      <!-- "Abrir con UltraArchive" (candidato, nunca predeterminado) -->
+      <RegistryKey Root="HKLM" Key="Software\Classes\Applications\UltraArchive.exe">
+        <RegistryValue Type="string" Name="FriendlyAppName" Value="UltraArchive" />
+        <RegistryValue Key="shell\open\command" Type="string" Value="&quot;[INSTALLFOLDER]UltraArchive.exe&quot; &quot;%1&quot;" />
+        <RegistryValue Key="SupportedTypes" Type="string" Name=".zip" Value="" />
+        <RegistryValue Key="SupportedTypes" Type="string" Name=".7z" Value="" />
+        <RegistryValue Key="SupportedTypes" Type="string" Name=".rar" Value="" />
+        <RegistryValue Key="SupportedTypes" Type="string" Name=".tar" Value="" />
+        <RegistryValue Key="SupportedTypes" Type="string" Name=".gz" Value="" />
+        <RegistryValue Key="SupportedTypes" Type="string" Name=".tgz" Value="" />
+        <RegistryValue Key="SupportedTypes" Type="string" Name=".bz2" Value="" />
+        <RegistryValue Key="SupportedTypes" Type="string" Name=".iso" Value="" />
+      </RegistryKey>
+
+      <!-- "Abrir con" del menu contextual por extension -->
+      <RegistryValue Root="HKLM" Key="Software\Classes\.zip\OpenWithList\UltraArchive.exe"  Type="string" Value="" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\.7z\OpenWithList\UltraArchive.exe"   Type="string" Value="" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\.rar\OpenWithList\UltraArchive.exe"  Type="string" Value="" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\.tar\OpenWithList\UltraArchive.exe"  Type="string" Value="" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\.gz\OpenWithList\UltraArchive.exe"   Type="string" Value="" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\.tgz\OpenWithList\UltraArchive.exe"  Type="string" Value="" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\.bz2\OpenWithList\UltraArchive.exe"  Type="string" Value="" />
+      <RegistryValue Root="HKLM" Key="Software\Classes\.iso\OpenWithList\UltraArchive.exe"  Type="string" Value="" />
+    </Component>
+
+    <!-- ================================================================================= -->
+    <!--  Menu contextual MODERNO de Windows 11 (IExplorerCommand + paquete MSIX)            -->
+    <!--                                                                                     -->
+    <!--  Los ficheros shellext\*.msix / *.cer / register.ps1 / unregister.ps1 los cosecha   -->
+    <!--  HarvestDirectory desde publish\UltraArchive\shellext\ (los produce                 -->
+    <!--  build\shellext\setup.ps1 + build\publish.ps1). Si esa carpeta no existe en la      -->
+    <!--  distribucion, las custom actions no encuentran register.ps1 y no hacen nada        -->
+    <!--  (Return="ignore"): el submenu clasico HKLM de arriba sigue funcionando.            -->
+    <!--                                                                                     -->
+    <!--  register.ps1  : confia en el certificado autofirmado, aprovisiona el MSIX para     -->
+    <!--                  todos los usuarios, excluye el falso positivo AOT de Defender y     -->
+    <!--                  registra el paquete para las sesiones abiertas.                     -->
+    <!--  unregister.ps1: revierte todo lo anterior sin dejar residuos.                      -->
+    <!-- ================================================================================= -->
+    <!-- Un CA diferido WixSilentExec64 recibe su linea de comandos del CustomActionData, que
+         Windows Installer rellena con el valor de la propiedad que se llama IGUAL que el CA.
+         Por eso el CA inmediato "Set..." fija la propiedad "UltraArchive(Un)registerShellExt". -->
+    <CustomAction Id="SetUltraArchiveRegisterShellExt"
+                  Property="UltraArchiveRegisterShellExt"
+                  Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;[INSTALLFOLDER]shellext\register.ps1&quot; &quot;[INSTALLFOLDER]shellext&quot;" />
+    <CustomAction Id="UltraArchiveRegisterShellExt"
+                  BinaryRef="Wix4UtilCA_X64"
+                  DllEntry="WixSilentExec64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <CustomAction Id="SetUltraArchiveUnregisterShellExt"
+                  Property="UltraArchiveUnregisterShellExt"
+                  Value="&quot;[System64Folder]WindowsPowerShell\v1.0\powershell.exe&quot; -NoProfile -NonInteractive -ExecutionPolicy Bypass -File &quot;[INSTALLFOLDER]shellext\unregister.ps1&quot; &quot;[INSTALLFOLDER]shellext&quot;" />
+    <CustomAction Id="UltraArchiveUnregisterShellExt"
+                  BinaryRef="Wix4UtilCA_X64"
+                  DllEntry="WixSilentExec64"
+                  Execute="deferred"
+                  Impersonate="no"
+                  Return="ignore" />
+
+    <InstallExecuteSequence>
+      <!-- Instalar / actualizar: tras copiar los ficheros. -->
+      <Custom Action="SetUltraArchiveRegisterShellExt" Before="UltraArchiveRegisterShellExt" Condition="NOT REMOVE" />
+      <Custom Action="UltraArchiveRegisterShellExt" After="InstallFiles" Condition="NOT REMOVE" />
+      <!-- Desinstalar: antes de borrar los ficheros (los scripts aun deben existir). -->
+      <Custom Action="SetUltraArchiveUnregisterShellExt" Before="UltraArchiveUnregisterShellExt" Condition="REMOVE=&quot;ALL&quot;" />
+      <Custom Action="UltraArchiveUnregisterShellExt" Before="RemoveFiles" Condition="REMOVE=&quot;ALL&quot;" />
+    </InstallExecuteSequence>
+
+  </Package>
+</Wix>

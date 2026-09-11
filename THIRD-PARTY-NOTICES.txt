@@ -1,0 +1,68 @@
+UltraArchive — Avisos de terceros / Third-party notices
+=======================================================
+
+Este documento recoge el software de terceros que UltraArchive utiliza o
+redistribuye, con su licencia y las obligaciones correspondientes.
+
+Última actualización: 2026-09-03 (Fase 8 — 7zr.exe incorporado y verificado).
+
+
+-------------------------------------------------------------------------------
+1. Librerías gestionadas (NuGet)
+-------------------------------------------------------------------------------
+
+SharpCompress            0.50.4   — MIT
+  https://github.com/adamhathcock/sharpcompress
+  Lectura de ZIP/7Z/TAR/GZIP/RAR; creación de ZIP (plano), 7Z, TAR, GZIP.
+
+SharpZipLib              1.4.2    — MIT
+  https://github.com/icsharpcode/SharpZipLib
+  Creación de ZIP cifrado con WinZip AES-256.
+
+LTRData.DiscUtils.Iso9660   1.0.88   — MIT  (+ .Core, .Streams, LTRData.Extensions, todos MIT)
+  https://github.com/LTRData/DiscUtils
+  Lectura de imágenes ISO9660 / Joliet / Rock Ridge.
+
+System.IO.Hashing        10.0.11  — MIT   (Microsoft)
+Microsoft.Extensions.DependencyInjection  8.0.0  — MIT   (Microsoft)
+WPF-UI                   4.3.0    — MIT
+xUnit                    2.5.3    — Apache-2.0   (solo pruebas, no se redistribuye)
+
+
+-------------------------------------------------------------------------------
+2. Binario externo:  7zr.exe  (creación de 7Z cifrado — Fase 6)
+-------------------------------------------------------------------------------
+
+ESTADO: incorporado en tools/7zr.exe y verificado. UltraArchive comprueba el
+        SHA-256 (abajo) antes de ejecutarlo y se niega a lanzar cualquier otro
+        binario.
+
+Componente : 7zr.exe  (versión reducida de 7z.exe; solo maneja el formato 7z).
+Procedente de : "LZMA SDK".
+Origen (URL) : https://www.7-zip.org/sdk.html  (fichero: a/lzma2602.7z, bin/7zr.exe — build x86)
+Versión del SDK : 26.02  (publicada 2026-06-25)
+Banner del binario : "7-Zip (r) 26.02 (x86) : Igor Pavlov : Public domain : 2026-06-25"
+Tamaño : 602 112 bytes
+SHA-256 del contenedor lzma2602.7z : 2878C85F5F43A4A4E0952B1FD4E5FE097C1C143997A8047C7E1E788892AA9357
+SHA-256 del binario bundleado (bin/7zr.exe, x86) :
+        56B8CC9F4971CEF253644FAFE54063ED7FDCA551D4DEE0F8C6BAA81B855ACD72
+        (fijado también en UltraArchive.Interop/SevenZip/SevenZipToolReference.cs).
+
+Licencia : dominio público.
+  Referencia documental — la página oficial del LZMA SDK
+  (https://www.7-zip.org/sdk.html) declara literalmente:
+
+    "LZMA SDK is placed in the public domain.
+     Anyone is free to copy, modify, publish, use, compile, sell, or distribute
+     the original LZMA SDK code, either in source code form or as a compiled
+     binary, for any purpose, commercial or non-commercial, and by any means."
+
+  Referencia SPDX : LZMA-SDK-9.22
+  (https://spdx.org/licenses/LZMA-SDK-9.22.html)
+
+  Colocado en el dominio público por Igor Pavlov (a partir del LZMA SDK 4.62,
+  02-12-2008). Sin obligaciones de redistribución. Este aviso se mantiene por
+  transparencia, no por requisito legal.
+
+Nota: NO se utiliza 7z.exe / 7z.dll / 7za.exe (LGPL + restricción unRAR); solo
+      7zr.exe (dominio público, sin código unRAR).

@@ -1,0 +1,33 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <!--
+    Extensión de shell de UltraArchive para el MENÚ CONTEXTUAL MODERNO de Windows 11.
+
+    DLL COM in-proc compilada con .NET 8 Native AOT (sin runtime .NET en el equipo de destino).
+    Implementa IExplorerCommand + IEnumExplorerCommand (submenú desplegable "Ultra Archive").
+    Cada verbo solo LANZA UltraArchive.exe con los flags CLI que ya existen
+    (ver UltraArchive.Shell/ShellCommandLine.cs) — no hay lógica de compresión/extracción aquí.
+
+    NO forma parte de UltraArchive.sln (igual que installer/): necesita win-x64 + el linker MSVC.
+    Construir con: pwsh build/shellext/build.ps1
+  -->
+
+  <PropertyGroup>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+    <Platforms>x64</Platforms>
+    <PublishAot>true</PublishAot>
+    <NativeLib>Shared</NativeLib>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <DisableRuntimeMarshalling>true</DisableRuntimeMarshalling>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>disable</ImplicitUsings>
+    <InvariantGlobalization>true</InvariantGlobalization>
+    <IlcOptimizationPreference>Size</IlcOptimizationPreference>
+    <AssemblyName>UltraArchive.ShellExtension</AssemblyName>
+    <RootNamespace>UltraArchive.ShellExtension</RootNamespace>
+    <!-- Identidad MSIX embebida: liga la DLL al paquete firmado (surrogate host). -->
+    <ApplicationManifest>..\manifest\dllmanifest.manifest</ApplicationManifest>
+  </PropertyGroup>
+
+</Project>

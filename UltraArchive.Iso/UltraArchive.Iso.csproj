@@ -1,0 +1,24 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\UltraArchive.Core\UltraArchive.Core.csproj" />
+    <ProjectReference Include="..\UltraArchive.Security\UltraArchive.Security.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <!-- Fase 5: lectura/extracción de ISO9660 (+ Joliet + Rock Ridge). MIT, 100% gestionado, sin nativo.
+         Arrastra LTRData.DiscUtils.Core y LTRData.DiscUtils.Streams como dependencias transitivas. -->
+    <PackageReference Include="LTRData.DiscUtils.Iso9660" Version="1.0.88" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="UltraArchive.Tests" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+
+</Project>

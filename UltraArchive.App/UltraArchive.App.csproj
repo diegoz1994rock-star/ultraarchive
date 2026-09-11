@@ -1,0 +1,59 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="..\UltraArchive.Core\UltraArchive.Core.csproj" />
+    <ProjectReference Include="..\UltraArchive.Archives\UltraArchive.Archives.csproj" />
+    <ProjectReference Include="..\UltraArchive.Iso\UltraArchive.Iso.csproj" />
+    <ProjectReference Include="..\UltraArchive.Security\UltraArchive.Security.csproj" />
+    <ProjectReference Include="..\UltraArchive.Interop\UltraArchive.Interop.csproj" />
+    <ProjectReference Include="..\UltraArchive.Shell\UltraArchive.Shell.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="8.0.0" />
+    <PackageReference Include="WPF-UI" Version="4.3.0" />
+  </ItemGroup>
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <UseWPF>true</UseWPF>
+    <AssemblyName>UltraArchive</AssemblyName>
+    <RootNamespace>UltraArchive.App</RootNamespace>
+    <RuntimeIdentifiers>win-x64</RuntimeIdentifiers>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets\UltraArchive.ico</ApplicationIcon>
+    <SatelliteResourceLanguages>es;en</SatelliteResourceLanguages>
+  </PropertyGroup>
+
+  <!-- Icono / logotipo de UltraArchive (a partir de Downloads/UltraArchive.png). -->
+  <ItemGroup>
+    <Resource Include="Assets\UltraArchive.ico" />
+    <Resource Include="Assets\UltraArchive-logo.png" />
+    <Resource Include="Assets\ASTRIM-logo.png" />
+  </ItemGroup>
+
+  <!-- Distribución del binario externo 7zr.exe (Fase 6A/8).
+       Se copia a "<salida>/tools/7zr.exe" SOLO si el fichero está presente en "<repo>/tools/7zr.exe".
+       Mientras no esté, la creación de 7Z cifrado queda deshabilitada en tiempo de ejecución
+       (SevenZipLocator → NotFound / NotConfigured). Ver tools/README.md y THIRD-PARTY-NOTICES.txt. -->
+  <ItemGroup Condition="Exists('$(MSBuildThisFileDirectory)..\tools\7zr.exe')">
+    <Content Include="$(MSBuildThisFileDirectory)..\tools\7zr.exe">
+      <Link>tools\7zr.exe</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <!-- Avisos de terceros junto al ejecutable. -->
+  <ItemGroup>
+    <Content Include="$(MSBuildThisFileDirectory)..\THIRD-PARTY-NOTICES.txt">
+      <Link>THIRD-PARTY-NOTICES.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="$(MSBuildThisFileDirectory)..\LICENSE.txt" Condition="Exists('$(MSBuildThisFileDirectory)..\LICENSE.txt')">
+      <Link>LICENSE.txt</Link>
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+</Project>

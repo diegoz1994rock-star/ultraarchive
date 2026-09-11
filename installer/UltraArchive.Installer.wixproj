@@ -1,0 +1,56 @@
+<Project Sdk="WixToolset.Sdk/5.0.2">
+
+  <!--
+    Instalador MSI de UltraArchive. NO forma parte de UltraArchive.sln a proposito: el SDK
+    WixToolset.Sdk 5.0.2 y WixToolset.Heat se restauran de NuGet al construir este proyecto.
+
+    Uso:
+      pwsh build/publish.ps1            (genera publish/UltraArchive/ en Release)
+      dotnet build installer/UltraArchive.Installer.wixproj -c Release -p:ProductVersion=1.0.0
+      (resultado: installer/bin/Release/UltraArchive-1.0.0.msi)
+
+    El MSI instala los ficheros, un acceso directo en el menu Inicio y escribe de forma declarativa
+    (Package.wxs, componente ContextMenuIntegration) las claves de HKLM\Software\Classes del submenu
+    contextual "Ultra Archive". Windows Installer las anade al instalar y las quita al desinstalar.
+    El usuario tambien puede activarlo solo para su cuenta (HKCU) desde el boton "Explorador".
+
+    El payload es win-x64 autocontenido -> el MSI es de 64 bits (Platform x64) e instala en el
+    Program Files de 64 bits.
+  -->
+
+  <PropertyGroup>
+    <OutputName>UltraArchive-$(ProductVersion)</OutputName>
+    <OutputType>Package</OutputType>
+    <ProductVersion Condition="'$(ProductVersion)' == ''">1.0.0</ProductVersion>
+    <Platform Condition="'$(Platform)' == '' or '$(Platform)' == 'AnyCPU'">x64</Platform>
+    <InstallerPlatform>x64</InstallerPlatform>
+    <DefineConstants>PublishDir=$(MSBuildThisFileDirectory)..\publish\UltraArchive;ProductVersion=$(ProductVersion)</DefineConstants>
+    <!-- Asistente y textos de Windows Installer en español (WixUI_es-ES.wxl de WixToolset.UI.wixext). -->
+    <Cultures>es-ES</Cultures>
+  </PropertyGroup>
+
+  <!-- El SDK de WiX ya incluye Package.wxs automaticamente (*.wxs del directorio del proyecto). -->
+
+  <ItemGroup>
+    <!-- Cosecha el contenido de publish/UltraArchive/ en un componente por fichero. -->
+    <HarvestDirectory Include="..\publish\UltraArchive">
+      <ComponentGroupName>UltraArchiveFiles</ComponentGroupName>
+      <DirectoryRefId>INSTALLFOLDER</DirectoryRefId>
+      <!-- Volcar el CONTENIDO de publish/UltraArchive/ directamente en INSTALLFOLDER,
+           sin envolverlo en una subcarpeta "UltraArchive" extra (-srd). -->
+      <SuppressRootDirectory>true</SuppressRootDirectory>
+      <SuppressCom>true</SuppressCom>
+      <SuppressRegistry>true</SuppressRegistry>
+      <PreprocessorVariable>var.PublishDir</PreprocessorVariable>
+    </HarvestDirectory>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="WixToolset.Heat" Version="5.0.2" />
+    <!-- Custom actions WixSilentExec64 para registrar/quitar la extension de shell del menu moderno. -->
+    <PackageReference Include="WixToolset.Util.wixext" Version="5.0.2" />
+    <!-- Asistente de instalacion con marca (WixUI_InstallDir + imagenes de ASTRIM). -->
+    <PackageReference Include="WixToolset.UI.wixext" Version="5.0.2" />
+  </ItemGroup>
+
+</Project>
